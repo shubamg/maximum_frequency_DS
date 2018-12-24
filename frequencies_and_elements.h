@@ -71,14 +71,14 @@ public:
 	}
 
 	void print_max_frequency() {
-			auto end_iterator = frequencies_and_elements.end();
-			if(end_iterator == frequencies_and_elements.begin())
-				std::cout<<"Oops! The data structure is empty. No max frequency elements!!"<<std::endl;
-			else {
-				std::cout<<"Here are the elements with max frequency"<<std::endl;
-				--end_iterator;
-				end_iterator->print();
-			}
-			std::cout<<"####################################################"<<std::endl;
+		auto end_iterator = frequencies_and_elements.end();
+		if(end_iterator == frequencies_and_elements.begin())
+			std::cout<<"Oops! The data structure is empty. No max frequency elements!!"<<std::endl;
+		else {
+			std::cout<<"Here are the elements with max frequency"<<std::endl;
+			--end_iterator;
+			end_iterator->print();
 		}
+		std::cout<<"####################################################"<<std::endl;
+	}
 };

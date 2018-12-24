@@ -16,7 +16,7 @@ public:
 	std::unordered_set<T>& get_elements_with_frequency(){ return node.second; }
 
 	void print() {
-		std::cout<<"Frequency = "<<get_frequency()<<".\n List of elements is: ";
+		std::cout<<"Frequency = "<<get_frequency()<<".\nList of elements is: ";
 		auto it = get_elements_with_frequency().begin();
 		std::cout<<(*it);
 		for (++it; it != get_elements_with_frequency().end(); ++it)
