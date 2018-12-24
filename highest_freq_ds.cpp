@@ -7,15 +7,17 @@
 // where each element is of type long
 // We can templatize it later
 
-using node_type = std::pair<int, std::unordered_set<long>>;
+template <typename T>
+using node_type = std::pair<int, std::unordered_set<T>>;
 
+template <typename T>
 class Node {
-	node_type node;
+	node_type<T> node;
 
 public:
-	Node(int freq, long element): node{freq, std::unordered_set<long>{element}} {}
+	Node(int freq, T element): node{freq, std::unordered_set<T>{element}} {}
 	int& get_frequency() { return node.first;}
-	std::unordered_set<long>& get_elements_with_frequency(){ return node.second; }
+	std::unordered_set<T>& get_elements_with_frequency(){ return node.second; }
 
 	void print() {
 		std::cout<<"Frequency = "<<get_frequency()<<".\n List of elements is: ";
@@ -27,15 +29,21 @@ public:
 	}
 };
 
-using list_type = std::list<Node>;
-using list_iterator = list_type::iterator;
-using hash_map = std::unordered_map<long, list_iterator>;
+template <typename T>
+using list_type = std::list<Node<T>>;
 
+template <typename T>
+using list_iterator = typename list_type<T>::iterator;
+
+template <typename T>
+using hash_map = std::unordered_map<T, list_iterator<T>>;
+
+template <typename T>
 class Frequencies_and_elements {
-	list_type frequencies_and_elements;
+	list_type<T> frequencies_and_elements;
 
 	// element guaranteed to be at element position
-	list_iterator remove_element(list_iterator element_position, long element) {
+	list_iterator<T> remove_element(list_iterator<T> element_position, T element) {
 		auto& hash_set = element_position->get_elements_with_frequency();
 		hash_set.erase(element);
 		if(element_position->get_elements_with_frequency().empty())
@@ -46,17 +54,17 @@ class Frequencies_and_elements {
 public:
 	// returns new iterator to the position where the element was inserted
 	// no removal of any element is done
-	list_iterator insert_element(list_iterator insert_position,long element, int frequency) {
+	list_iterator<T> insert_element(list_iterator<T> insert_position,T element, int frequency) {
 		if(insert_position != frequencies_and_elements.end() &&
 				insert_position->get_frequency() == frequency) {
 			insert_position->get_elements_with_frequency().insert(element);
 			return insert_position;
 		}
 		else
-			return frequencies_and_elements.insert(insert_position, Node{frequency, element});
+			return frequencies_and_elements.insert(insert_position, Node<T>{frequency, element});
 	}
 
-	list_iterator increment_frequency(list_iterator original_position,long element) {
+	list_iterator<T> increment_frequency(list_iterator<T> original_position,T element) {
 		int frequency = original_position->get_frequency();
 		auto insert_itr = original_position;
 		++insert_itr;
@@ -64,7 +72,7 @@ public:
 		return insert_element(insert_itr, element, frequency+1);
 	}
 
-	list_iterator decrement_frequency(list_iterator element_position, long element) {
+	list_iterator<T> decrement_frequency(list_iterator<T> element_position, T element) {
 		int frequency = element_position->get_frequency()-1;
 		element_position = remove_element(element_position, element);
 		if (!frequency)
@@ -79,8 +87,8 @@ public:
 	}
 
 
-	list_iterator begin() { return frequencies_and_elements.begin();}
-	list_iterator end() { return frequencies_and_elements.end();}
+	list_iterator<T> begin() { return frequencies_and_elements.begin();}
+	list_iterator<T> end() { return frequencies_and_elements.end();}
 
 	void print_all() {
 		if(frequencies_and_elements.empty())
@@ -101,24 +109,26 @@ public:
 			std::cout<<"####################################################"<<std::endl;
 		}
 };
+
+template <typename T>
 class Max_frequency_DS {
 	// list of (freq:int, elements with that freq: hash_set(long))
 	// node of list is of type (int, hash_set(long))
 	// hash_map of (elem:long -> (list of nodes))
 
-	Frequencies_and_elements frequencies_and_elements;
-	hash_map elements;
+	Frequencies_and_elements<T> frequencies_and_elements;
+	hash_map<T> elements;
 
 public:
-	Max_frequency_DS (std::initializer_list<long> initializer_list):
-		frequencies_and_elements{Frequencies_and_elements{}},
-		elements{hash_map{}}  {
+	Max_frequency_DS (std::initializer_list<T> initializer_list):
+		frequencies_and_elements{Frequencies_and_elements<T>{}},
+		elements{hash_map<T>{}}  {
 		for(auto element: initializer_list) {
 			add(element);
 		}
 	}
 
-	void add(long element) {
+	void add(T element) {
 		std::cout<<"Adding "<<element<<std::endl;
 		auto iterator_in_map = elements.find(element);
 		if(iterator_in_map == elements.end()) {// element does not exist yet
@@ -132,7 +142,7 @@ public:
 		print_all();
 	}
 
-	void remove(long element) {
+	void remove(T element) {
 		std::cout<<"Removing "<<element<<std::endl;
 		auto iterator_in_map = elements.find(element);
 		if(iterator_in_map == elements.end()) {
@@ -153,7 +163,7 @@ public:
 };
 
 int main() {
-	Max_frequency_DS max_frequency_DS{400L, 500L};
+	Max_frequency_DS<long> max_frequency_DS{400L, 500L};
 //	max_frequency_DS.add(1L);
 //	max_frequency_DS.add(100L);
 //	max_frequency_DS.add(93L);
