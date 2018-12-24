@@ -6,11 +6,6 @@
 # include "node.h"
 #include "frequencies_and_elements.h"
 
-// Let us design a data structure for max frequency,
-// where each element is of type long
-// We can templatize it later
-
-
 template <typename T>
 using list_type = std::list<Node<T>>;
 
